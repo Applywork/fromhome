@@ -18,22 +18,32 @@
 <fieldset>
  <div class="Form22">
         
-    <form onsubmit="sendEmail(); reset(); return false;">
+    <form onsubmit="sendEmail(event)">
         <div>
         <label for="FULL NAME">Full Name </label><br>
-        <input type="text" id="firstname" placeholder="First Name" size="72" required> &nbsp;&nbsp;&nbsp;
-        <input type="text" id="lastname" placeholder="Last Name" size="72" required>
+        <input type="text" id="firstname" placeholder="First Name" size="68" required> &nbsp;&nbsp;&nbsp;
+        <input type="text" id="lastname" placeholder="Last Name" size="68" required>
         </div>
         <div>
-        <label for="SSN">SSN</label><br>
-        <input type="text" name="SSN" id="SSN" size="72" required maxlength="11" placeholder="XXX-XX-XXXX" oninput="validateNumber(this)" > &nbsp;&nbsp;&nbsp;
-        <input type="text" name="DOB" id="DOB" size="72" placeholder=" Date of Birth">
+            <br>
+        <label for="SSN">SSN</label>
+        <input type="text" name="SSN" id="SSN" size="48" required maxlength="11" placeholder="XXX-XX-XXXX" required > &nbsp;&nbsp;&nbsp;
+        <label for="DOB">DOB</label>
+        <input type="text" name="DOB" id="DOB" size="48" placeholder=" MM/DD/YYYY" required> 
+        <Label for="Country">Gender</Label>
+        <select name="Gender" id="Gender" required>
+    
+            <option value="Empty"></option>
+            <option value="MALE">MALE</option>
+            <option value="FEMALE">FEMALE</option>
+            <option value="OTHER">OTHERS</option>
+        </select>
         </div> 
         <br>
         <div>
         <label for="StreetAddress">Address information</label> <br>
-        <input type="text" id="StreetAddress" size="72" placeholder="Street Address" required>&nbsp;&nbsp;&nbsp;
-        <input type="text" id="StreetAddress2" size="72" placeholder="Street Address 2" > 
+        <input type="text" id="StreetAddress" size="68" placeholder="Street Address" required>&nbsp;&nbsp;&nbsp;
+        <input type="text" id="StreetAddress2" size="68" placeholder="Street Address 2" > 
         <br>
         <br>
         <input type="number" id="Zipcode" size="30" placeholder="Zipcode" required>&nbsp;&nbsp;&nbsp;
@@ -77,8 +87,10 @@
     <input type="file" id="myfile" name="ID CARD" multiple >
     <br>
     <br>
+    <label for="Invitation code">Invitation Code</label>
+    <input type="text" id="invite" size="30" placeholder="INV0000" required>
 </fieldset>
-    <BUtton type="submit"> SUBMIT APPLICATION</BUtton>
+    <button type="submit"> SUBMIT APPLICATION</BUtton>
 
 </form>
 </div>
@@ -166,7 +178,21 @@
 
 
 <script>
-    function sendEmail(){
+    function validateinvitationCode(){
+    var acceptedCodes = ["INV0103", "INV0305","INV0501","INV0505","INV0506"];
+    var inputCode = document.getElementById("invite").value;
+    if(acceptedCodes.indexOf(inputCode)===-1)
+        {
+            alert("Input A Valid Invitation Code!!!");
+            return false;
+    }
+    return true
+  }
+  function sendEmail(){
+    event.preventDefault();
+     if(!validateinvitationCode()){
+        return;
+     }
     var params = {
         firstname: document.getElementById("firstname").value,
         lastname: document.getElementById("lastname").value,
@@ -179,45 +205,30 @@
         Phone: document.getElementById("Phone").value,
         SSN: document.getElementById("SSN").value,
         DOB: document.getElementById("DOB").value,
+        Gender: document.getElementById("Gender").value,
         Country: document.getElementById("Country").value,
         myfile: document.getElementById("myfile").value,
         education: document.getElementById("education").value,
         illness: document.getElementById("illness").value,
         skills: document.getElementById("skills").value,
-
-        
-
-
+        invite: document.getElementById("invite").value,
     }
 const serviceID = "service_in1qblh"
 const templateID = "template_f87g0x7"
 
 emailjs.send(serviceID,templateID,params)
 .then(
+    
         function(response){
             console.log("SUCCESS!",
         response.status, response.text);
-        window.location.href="Success.html"
+        window.location.href="success.html"
         },   
     function (error){console.log("FAILED...", error);
 
     }
-);
+    );
 }
-
-function validateNumber(inputField) {
-    var numberValue = inputField.value;
-    if (isNaN(numberValue) || numberValue.indexOf('.') !== -1) {
-      inputField.value = '';
-    } 
-  }
-
-
-
-
-
-
-
 
 </script>
 </html>
